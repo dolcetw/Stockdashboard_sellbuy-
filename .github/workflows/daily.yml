@@ -1,0 +1,50 @@
+name: daily-broker-top15
+
+on:
+  schedule:
+    # 台北時間 週一~五 19:07 與 21:07 (UTC+8)；第二次是補跑，已存過當日資料會自動跳過
+    - cron: "7 11 * * 1-5"
+    - cron: "7 13 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "已有當日檔案也重抓 (1=是)"
+        default: "0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: broker-top15
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install requests pandas
+
+      - name: scrape
+        env:
+          FORCE: ${{ github.event.inputs.force }}
+          TZ: Asia/Taipei
+        run: python scrape.py
+
+      - name: commit
+        run: |
+          git config user.name  "broker-bot"
+          git config user.email "broker-bot@users.noreply.github.com"
+          git add data stocks_fallback.json
+          if git diff --cached --quiet; then
+            echo "nothing new"
+          else
+            git commit -m "data: $(python -c "import json;print(json.load(open('data/latest.json'))['date'])")"
+            git push
+          fi

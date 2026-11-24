@@ -2,8 +2,9 @@ name: daily-broker-top15
 
 on:
   schedule:
-    # 台北時間 週一~五 19:07 與 21:07 (UTC+8)；第二次是補跑，已存過當日資料會自動跳過
+    # 台北時間 週一~五 20:10 (UTC+8)；22:10
     - cron: "10 12 * * 1-5"
+    - cron: "10 14 * * 1-5"
     
   workflow_dispatch:
     inputs:

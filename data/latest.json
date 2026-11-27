@@ -1,7 +1,7 @@
 {
- "date": "20261126",
- "rows": 53568,
- "stocks": 1984,
- "file": "data/2026/broker_top15_20261126.csv.gz",
+ "date": "20261127",
+ "rows": 52638,
+ "stocks": 1980,
+ "file": "data/2026/broker_top15_20261127.csv.gz",
  "errors": {}
 }
